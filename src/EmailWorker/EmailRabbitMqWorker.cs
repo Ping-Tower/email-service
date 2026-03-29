@@ -12,6 +12,11 @@ namespace EmailWorker;
 
 public class EmailRabbitMqWorker : BackgroundService
 {
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     private readonly ILogger<EmailRabbitMqWorker> _logger;
     private readonly IEmailSender _emailSender;
     private readonly RabbitMqSettings _rabbitMqSettings;
@@ -57,7 +62,7 @@ public class EmailRabbitMqWorker : BackgroundService
                     {
                         var body = ea.Body.ToArray();
                         var message = Encoding.UTF8.GetString(body);
-                        var emailMessage = JsonSerializer.Deserialize<MessageDto>(message);
+                        var emailMessage = JsonSerializer.Deserialize<MessageDto>(message, JsonSerializerOptions);
 
                         if (emailMessage?.Email is null)
                         {
