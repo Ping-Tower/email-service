@@ -1,9 +1,6 @@
 ﻿using Domain;
-using MimeKit;
-using Polly;
-using Microsoft.Extensions.Logging;
-using Polly.Retry;
 using Microsoft.Extensions.Options;
+using MimeKit;
 
 namespace Infrastructure.EmailManager;
 
@@ -29,10 +26,14 @@ public class SmtpEmailSender : IEmailSender
 
         using (var client = new MailKit.Net.Smtp.SmtpClient())
         {
-            await client.ConnectAsync(_smtpSettings.Host, _smtpSettings.Port, MailKit.Security.SecureSocketOptions.StartTls);
-            await client.AuthenticateAsync(_smtpSettings.UserName ?? "", _smtpSettings.Password ?? "");
-            await client.SendAsync(message);
-            await client.DisconnectAsync(true);
+            await client.ConnectAsync(
+                _smtpSettings.Host,
+                _smtpSettings.Port,
+                MailKit.Security.SecureSocketOptions.StartTls,
+                cancellationToken);
+            await client.AuthenticateAsync(_smtpSettings.UserName ?? "", _smtpSettings.Password ?? "", cancellationToken);
+            await client.SendAsync(message, cancellationToken);
+            await client.DisconnectAsync(true, cancellationToken);
         }
     }
 }

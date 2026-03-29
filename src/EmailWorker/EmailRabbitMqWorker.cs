@@ -37,26 +37,6 @@ public class EmailRabbitMqWorker : BackgroundService
 
         _connection = await factory.CreateConnectionAsync(cancellationToken);
         _channel = await _connection.CreateChannelAsync();
-
-        await _channel.ExchangeDeclareAsync(exchange: _rabbitMqSettings.DlxName, type: ExchangeType.Direct, durable: true);
-
-        await _channel.QueueDeclareAsync(queue: _rabbitMqSettings.DlqName, durable: true, exclusive: false, autoDelete: false, arguments: null);
-        await _channel.QueueBindAsync(queue: _rabbitMqSettings.DlqName, exchange: _rabbitMqSettings.DlxName, routingKey: _rabbitMqSettings.DlqName);
-
-        var retryQueueArgs = new Dictionary<string, object>
-        {
-            { "x-dead-letter-exchange", "" },
-            { "x-dead-letter-routing-key", _rabbitMqSettings.MainQueue },
-            { "x-message-ttl", _rabbitMqSettings.RetryDelayMs },
-        };
-        await _channel.QueueDeclareAsync(queue: _rabbitMqSettings.RetryQueue, durable: true, exclusive: false, autoDelete: false, arguments: retryQueueArgs!);
-
-        var mainQueueArgs = new Dictionary<string, object>
-        {
-            { "x-dead-letter-exchange", _rabbitMqSettings.DlxName },
-            { "x-dead-letter-routing-key", _rabbitMqSettings.DlqName }
-        };
-        await _channel.QueueDeclareAsync(queue: _rabbitMqSettings.MainQueue, durable: true, exclusive: false, autoDelete: false, arguments: mainQueueArgs!);
     }
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -73,8 +53,6 @@ public class EmailRabbitMqWorker : BackgroundService
                 var consumer = new AsyncEventingBasicConsumer(_channel!);
                 consumer.ReceivedAsync += async (model, ea) =>
                 {
-                    var retryCount = GetRetryCount(ea.BasicProperties.Headers!);
-
                     try
                     {
                         var body = ea.Body.ToArray();
@@ -109,41 +87,8 @@ public class EmailRabbitMqWorker : BackgroundService
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "Transient error during email sending. Retry count: {RetryCount}", retryCount);
-
-                        if (retryCount < _rabbitMqSettings.MaxRetries)
-                        {
-                            try
-                            {
-                                var headers = ea.BasicProperties.Headers is not null
-                                    ? new Dictionary<string, object>(ea.BasicProperties.Headers!)
-                                    : new Dictionary<string, object>();
-
-                                headers["x-retry-count"] = retryCount + 1;
-
-                                var props = new BasicProperties { Headers = headers!};
-
-                                await _channel!.BasicPublishAsync(
-                                    exchange: "",
-                                    routingKey: _rabbitMqSettings.RetryQueue,
-                                    mandatory: true,
-                                    basicProperties: props,
-                                    body: ea.Body);
-
-                                await _channel.BasicAckAsync(ea.DeliveryTag, multiple: false);
-                                _logger.LogInformation("Message requeued for retry {RetryCount}/{MaxRetries}", retryCount + 1, _rabbitMqSettings.MaxRetries);
-                            }
-                            catch (Exception innerEx)
-                            {
-                                _logger.LogError(innerEx, "Failed to publish to retry queue. Sending original message to DLQ.");
-                                await _channel!.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: false);
-                            }
-                        }
-                        else
-                        {
-                            _logger.LogError("Message failed after {MaxRetries} retries. Sending to DLQ.", _rabbitMqSettings.MaxRetries);
-                            await _channel!.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: false);
-                        }
+                        _logger.LogError(ex, "Error during email sending. Message will be rejected.");
+                        await _channel!.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: false);
                     }
                 };
 
@@ -183,14 +128,6 @@ public class EmailRabbitMqWorker : BackgroundService
                 }
             }
         }
-    }
-
-    private static int GetRetryCount(IDictionary<string, object>? headers)
-    {
-        if (headers == null || !headers.TryGetValue("x-retry-count", out var value))
-            return 0;
-
-        return Convert.ToInt32(value);
     }
     public override async Task StopAsync(CancellationToken cancellationToken)
     {

@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using Domain;
 using Microsoft.Extensions.Logging;
 using Polly.CircuitBreaker;
@@ -55,6 +54,8 @@ public class ResilientEmailSender : IEmailSender
     public async Task SendEmailAsync(string email, string subject, string HtmlBody, CancellationToken cancellationToken)
     {
         var combinedPolicy = Policy.WrapAsync(_asyncRetryPolicy, _timeoutPolicy, _circuitBreakerPolicy);
-        await combinedPolicy.ExecuteAsync(() => _innerEmailSender.SendEmailAsync(email, subject, HtmlBody, cancellationToken));
+        await combinedPolicy.ExecuteAsync(
+            async ct => await _innerEmailSender.SendEmailAsync(email, subject, HtmlBody, ct),
+            cancellationToken);
     }
 }

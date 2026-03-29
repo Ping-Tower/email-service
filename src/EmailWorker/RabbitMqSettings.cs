@@ -7,9 +7,4 @@ public class RabbitMqSettings
     public string? UserName { get; set; }
     public string? Password { get; set; }
     public string MainQueue { get; set; } = null!;
-    public string DlxName { get; set; } = null!;
-    public string DlqName { get; set; } = null!;
-    public string RetryQueue { get; set; } = null!;
-    public int MaxRetries { get; set; }
-    public int RetryDelayMs { get; set; }
 }
