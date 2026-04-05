@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Server recovered</title>
+</head>
+<body style="margin:0;padding:0;background:#eef8f4;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:#183126;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#eef8f4;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 22px 60px rgba(24,49,38,0.12);">
+          <tr>
+            <td style="background:linear-gradient(135deg,#0b6e4f 0%,#29b383 100%);padding:40px 40px 56px;color:#ffffff;">
+              <div style="font-size:12px;letter-spacing:0.24em;text-transform:uppercase;opacity:0.82;">PingTower recovery</div>
+              <h1 style="margin:16px 0 0;font-size:34px;line-height:1.15;">{{serverName}} is back online</h1>
+              <p style="margin:16px 0 0;font-size:16px;line-height:1.7;max-width:440px;opacity:0.94;">The monitored target recovered successfully. PingTower observed a healthy UP state.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:40px;">
+              <div style="border:1px solid #cfe9dc;border-radius:20px;padding:24px;background:#f7fdf9;">
+                <div style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#4f7d69;">Host</div>
+                <div style="margin-top:10px;font-size:22px;font-weight:700;color:#0b6e4f;">{{host}}</div>
+                <div style="margin-top:24px;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#4f7d69;">Observed at</div>
+                <div style="margin-top:10px;font-size:16px;color:#35594a;">{{timestampUtc}}</div>
+              </div>
+              <p style="margin:28px 0 0;font-size:15px;line-height:1.8;color:#486456;">Status: <strong>{{status}}</strong>. Monitoring remains active.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -1,0 +1,13 @@
+.git
+.gitignore
+.idea
+.vscode
+.env
+.env.local
+.DS_Store
+
+**/bin/
+**/obj/
+**/TestResults/
+
+tests/

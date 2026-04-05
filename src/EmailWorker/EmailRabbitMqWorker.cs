@@ -19,14 +19,20 @@ public class EmailRabbitMqWorker : BackgroundService
 
     private readonly ILogger<EmailRabbitMqWorker> _logger;
     private readonly IEmailSender _emailSender;
+    private readonly IEmailTemplateRenderer _emailTemplateRenderer;
     private readonly RabbitMqSettings _rabbitMqSettings;
     private IConnection? _connection;
     private IChannel? _channel;
 
-    public EmailRabbitMqWorker(ILogger<EmailRabbitMqWorker> logger, IEmailSender emailSender, IOptions<RabbitMqSettings> rabbitMqSettings)
+    public EmailRabbitMqWorker(
+        ILogger<EmailRabbitMqWorker> logger,
+        IEmailSender emailSender,
+        IEmailTemplateRenderer emailTemplateRenderer,
+        IOptions<RabbitMqSettings> rabbitMqSettings)
     {
         _logger = logger;
         _emailSender = emailSender;
+        _emailTemplateRenderer = emailTemplateRenderer;
         _rabbitMqSettings = rabbitMqSettings.Value;
     }
 
@@ -64,20 +70,25 @@ public class EmailRabbitMqWorker : BackgroundService
                         var message = Encoding.UTF8.GetString(body);
                         var emailMessage = JsonSerializer.Deserialize<MessageDto>(message, JsonSerializerOptions);
 
-                        if (emailMessage?.Email is null)
+                        if (emailMessage?.Email is null || string.IsNullOrWhiteSpace(emailMessage.TemplateId))
                         {
-                            _logger.LogWarning("Invalid message: missing email");
+                            _logger.LogWarning("Invalid message: missing email or template id");
                             await _channel!.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: false);
                             return;
                         }
 
-                        await _emailSender.SendEmailAsync(
-                            emailMessage.Email,
-                            emailMessage.Subject ?? "",
-                            emailMessage.HtmlBody ?? "",
+                        var (subject, htmlBody) = await _emailTemplateRenderer.RenderAsync(
+                            emailMessage.TemplateId,
+                            emailMessage.Data,
                             cancellationToken);
 
-                        _logger.LogInformation("Email sent to {Email}", emailMessage.Email);
+                        await _emailSender.SendEmailAsync(
+                            emailMessage.Email,
+                            subject,
+                            htmlBody,
+                            cancellationToken);
+
+                        _logger.LogInformation("Email sent to {Email} using template {TemplateId}", emailMessage.Email, emailMessage.TemplateId);
                         await _channel!.BasicAckAsync(ea.DeliveryTag, multiple: false);
                     }
                     catch (JsonException jsonEx)
@@ -88,6 +99,11 @@ public class EmailRabbitMqWorker : BackgroundService
                     catch (ArgumentNullException argNullEx) when (argNullEx.ParamName == nameof(MessageDto.Email))
                     {
                         _logger.LogWarning("Message rejected due to missing email. Sending to DLQ.");
+                        await _channel!.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: false);
+                    }
+                    catch (FileNotFoundException templateEx)
+                    {
+                        _logger.LogError(templateEx, "Email template not found. Sending message to DLQ.");
                         await _channel!.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: false);
                     }
                     catch (Exception ex)

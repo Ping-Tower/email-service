@@ -10,8 +10,9 @@ public static class DI
     {
         var sectionName = "SmtpSettings";
         services.Configure<SmtpSettings>(configuration.GetSection(sectionName));
+        services.AddSingleton<IEmailTemplateRenderer, FileSystemEmailTemplateRenderer>();
         services.AddTransient<IEmailSender, SmtpEmailSender>();
         services.Decorate<IEmailSender, ResilientEmailSender>();
         return services;
     }
-}
+} 

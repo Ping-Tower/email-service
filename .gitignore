@@ -1,6 +1,7 @@
 # Visual Studio / Rider / IDE
 .vs/
 .idea/
+.vscode/
 *.suo
 *.user
 *.userosscache
@@ -21,6 +22,7 @@ packages/
 
 # ASP.NET / Secrets
 appsettings*.json
+!src/EmailWorker/appsettings.example.json
 secrets.json
 *.pfx
 *.key
