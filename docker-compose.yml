@@ -3,22 +3,22 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ${EMAIL_SERVICE_IMAGE_NAME:-email-service:local}
-    container_name: ${EMAIL_SERVICE_CONTAINER_NAME:-email-service}
+    image: ${EMAIL_SERVICE_IMAGE_NAME}
+    container_name: email-service
     restart: unless-stopped
     environment:
-      DOTNET_ENVIRONMENT: ${EMAIL_SERVICE_DOTNET_ENVIRONMENT:-Production}
-      RabbitMqSettings__HostName: ${EMAIL_SERVICE_RABBITMQ_HOST:-broker}
-      RabbitMqSettings__Port: ${EMAIL_SERVICE_RABBITMQ_PORT:-5672}
-      RabbitMqSettings__UserName: ${EMAIL_SERVICE_RABBITMQ_USERNAME:-admin}
-      RabbitMqSettings__Password: ${EMAIL_SERVICE_RABBITMQ_PASSWORD:-CHANGE_ME_RABBITMQ_PASSWORD}
-      RabbitMqSettings__MainQueue: ${EMAIL_SERVICE_RABBITMQ_MAIN_QUEUE:-emailQueue}
+      DOTNET_ENVIRONMENT: ${EMAIL_SERVICE_DOTNET_ENVIRONMENT}
+      RabbitMqSettings__HostName: ${EMAIL_SERVICE_RABBITMQ_HOST}
+      RabbitMqSettings__Port: ${EMAIL_SERVICE_RABBITMQ_PORT}
+      RabbitMqSettings__UserName: ${EMAIL_SERVICE_RABBITMQ_USERNAME}
+      RabbitMqSettings__Password: ${EMAIL_SERVICE_RABBITMQ_PASSWORD}
+      RabbitMqSettings__MainQueue: ${EMAIL_SERVICE_RABBITMQ_MAIN_QUEUE}
       SmtpSettings__Host: ${EMAIL_SERVICE_SMTP_HOST}
       SmtpSettings__Port: ${EMAIL_SERVICE_SMTP_PORT}
-      SmtpSettings__UserName: ${EMAIL_SERVICE_SMTP_USERNAME:-}
-      SmtpSettings__Password: ${EMAIL_SERVICE_SMTP_PASSWORD:-}
-      SmtpSettings__FromAddress: ${EMAIL_SERVICE_SMTP_FROM_ADDRESS:-noreply@example.com}
-      SmtpSettings__FromName: ${EMAIL_SERVICE_SMTP_FROM_NAME:-PingTower}
+      SmtpSettings__UserName: ${EMAIL_SERVICE_SMTP_USERNAME}
+      SmtpSettings__Password: ${EMAIL_SERVICE_SMTP_PASSWORD}
+      SmtpSettings__FromAddress: ${EMAIL_SERVICE_SMTP_FROM_ADDRESS}
+      SmtpSettings__FromName: ${EMAIL_SERVICE_SMTP_FROM_NAME}
     networks:
       - pingtower_network
 
