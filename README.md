@@ -1,26 +1,12 @@
-<div align="center">
+# PingTower Email Service
 
-<a href="https://gitlab.com/pingtower"><img src="https://gitlab.com/uploads/-/system/group/avatar/121984904/logo-mark-avatar.png" width="72" alt="PingTower"></a>
+Renders and sends every PingTower email over SMTP — with retries and a circuit breaker.
 
-# 📨 email-service
-
-### Renders and sends every PingTower email over SMTP — with retries and a circuit breaker
-
-[![pipeline](https://gitlab.com/pingtower/email-service/badges/main/pipeline.svg)](https://gitlab.com/pingtower/email-service/-/pipelines)
-![C#](https://img.shields.io/badge/C%23_·_.NET_10-512BD4?logo=dotnet&logoColor=white)
-![MailKit](https://img.shields.io/badge/MailKit-SMTP-0ea5e9)
-![Polly](https://img.shields.io/badge/Polly-resilience-6366f1)
-![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?logo=rabbitmq&logoColor=white)
-
-<sub>Part of <a href="https://gitlab.com/pingtower"><b>PingTower</b></a> — real-time server availability monitoring</sub>
-
-</div>
-
----
+Stack: C#, .NET 10, MailKit, Polly, RabbitMQ.
 
 ## Role in the system
 
-The [api](https://gitlab.com/pingtower/api) never talks to SMTP directly: it drops a small message with a
+The `api` never talks to SMTP directly: it drops a small message with a
 recipient, a template id and template data into `emailQueue`. email-service renders the template and
 delivers it, so slow or flaky mail servers never block user requests or alert processing.
 
@@ -49,12 +35,12 @@ flowchart LR
 
 | Direction | Channel | Name | Payload |
 | --- | --- | --- | --- |
-| ⬅️ In | work queue (default exchange) | `emailQueue` | `{ "email", "templateId", "data": { … } }` |
-| ➡️ Out | SMTP | `EMAIL_SERVICE_SMTP_*` | rendered HTML email |
+| In | work queue (default exchange) | `emailQueue` | `{ "email", "templateId", "data": { … } }` |
+| Out | SMTP | `EMAIL_SERVICE_SMTP_*` | rendered HTML email |
 
 ## Quick start
 
-**Whole stack** — via [infra](https://gitlab.com/pingtower/infra) (all repos cloned side by side):
+**Whole stack** — via `infra` (all repos cloned side by side):
 
 ```bash
 make -C infra up
