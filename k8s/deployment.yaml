@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email-service
+  namespace: pingtower
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  progressDeadlineSeconds: 600
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: email-service
+  template:
+    metadata:
+      labels:
+        app: email-service
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      imagePullSecrets:
+        - name: gitlab-registry
+      containers:
+        - name: email-service
+          image: registry.gitlab.com/pingtower/email-service:REPLACE_WITH_COMMIT_SHA
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          env:
+            - name: DOTNET_ENVIRONMENT
+              value: Production
+            - name: RabbitMqSettings__HostName
+              valueFrom:
+                configMapKeyRef:
+                  name: pingtower-infra
+                  key: RABBITMQ_HOST
+            - name: RabbitMqSettings__Port
+              valueFrom:
+                configMapKeyRef:
+                  name: pingtower-infra
+                  key: RABBITMQ_PORT
+            - name: RabbitMqSettings__UserName
+              valueFrom:
+                configMapKeyRef:
+                  name: pingtower-infra
+                  key: RABBITMQ_USER
+            - name: RabbitMqSettings__Password
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq
+                  key: password
+            - name: RabbitMqSettings__MainQueue
+              valueFrom:
+                configMapKeyRef:
+                  name: pingtower-infra
+                  key: RABBITMQ_MAIN_QUEUE
+            # SMTP-настройки целиком из Variables проекта email-service.
+            - name: SmtpSettings__Host
+              valueFrom:
+                secretKeyRef:
+                  name: email-service
+                  key: smtp-host
+            - name: SmtpSettings__Port
+              valueFrom:
+                secretKeyRef:
+                  name: email-service
+                  key: smtp-port
+            - name: SmtpSettings__UserName
+              valueFrom:
+                secretKeyRef:
+                  name: email-service
+                  key: smtp-username
+            - name: SmtpSettings__Password
+              valueFrom:
+                secretKeyRef:
+                  name: email-service
+                  key: smtp-password
+            - name: SmtpSettings__FromAddress
+              valueFrom:
+                secretKeyRef:
+                  name: email-service
+                  key: smtp-from-address
+            - name: SmtpSettings__FromName
+              valueFrom:
+                secretKeyRef:
+                  name: email-service
+                  key: smtp-from-name
+          # Проб нет: HTTP-сервера в worker нет (in-process health — будущий коммит).
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
