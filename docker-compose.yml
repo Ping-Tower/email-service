@@ -19,6 +19,8 @@ services:
       SmtpSettings__Password: ${EMAIL_SERVICE_SMTP_PASSWORD}
       SmtpSettings__FromAddress: ${EMAIL_SERVICE_SMTP_FROM_ADDRESS}
       SmtpSettings__FromName: ${EMAIL_SERVICE_SMTP_FROM_NAME}
+      SmtpSettings__Security: ${EMAIL_SERVICE_SMTP_SECURITY:-starttls}
+      SmtpSettings__TimeoutSeconds: ${EMAIL_SERVICE_SMTP_TIMEOUT_SECONDS:-30}
     networks:
       - pingtower_network
 

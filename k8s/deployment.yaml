@@ -93,6 +93,16 @@ spec:
                 secretKeyRef:
                   name: email-service
                   key: smtp-from-name
+            - name: SmtpSettings__Security
+              valueFrom:
+                secretKeyRef:
+                  name: email-service
+                  key: smtp-security
+            - name: SmtpSettings__TimeoutSeconds
+              valueFrom:
+                secretKeyRef:
+                  name: email-service
+                  key: smtp-timeout-seconds
           # Проб нет: HTTP-сервера в worker нет (in-process health — будущий коммит).
           resources:
             requests:

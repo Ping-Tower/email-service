@@ -26,10 +26,11 @@ public class SmtpEmailSender : IEmailSender
 
         using (var client = new MailKit.Net.Smtp.SmtpClient())
         {
+            client.Timeout = checked(_smtpSettings.TimeoutSeconds * 1000);
             await client.ConnectAsync(
                 _smtpSettings.Host,
                 _smtpSettings.Port,
-                MailKit.Security.SecureSocketOptions.StartTls,
+                _smtpSettings.GetSocketOptions(),
                 cancellationToken);
             await client.AuthenticateAsync(_smtpSettings.UserName ?? "", _smtpSettings.Password ?? "", cancellationToken);
             await client.SendAsync(message, cancellationToken);

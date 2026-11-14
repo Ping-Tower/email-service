@@ -1,4 +1,5 @@
 using Domain;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using Polly.CircuitBreaker;
 using Polly.Retry;
@@ -15,7 +16,7 @@ public class ResilientEmailSender : IEmailSender
     private readonly AsyncTimeoutPolicy _timeoutPolicy;
     private readonly ILogger<ResilientEmailSender> _logger;
 
-    public ResilientEmailSender(IEmailSender innerEmailSender, ILogger<ResilientEmailSender> logger)
+    public ResilientEmailSender(IEmailSender innerEmailSender, ILogger<ResilientEmailSender> logger, IOptions<SmtpSettings>? settings = null)
     {
         _innerEmailSender = innerEmailSender;
         _logger = logger;
@@ -34,7 +35,7 @@ public class ResilientEmailSender : IEmailSender
                     _logger.LogWarning($"Retry {retryCount} encountered an error: {exception.Message}. Waiting {timeSpan} before next retry.");
                 });
 
-        _timeoutPolicy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10));
+        _timeoutPolicy = Policy.TimeoutAsync(TimeSpan.FromSeconds(settings?.Value.TimeoutSeconds ?? 30));
 
         _circuitBreakerPolicy = Policy
             .Handle<Exception>()
