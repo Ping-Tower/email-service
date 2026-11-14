@@ -1,36 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Server recovered</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark">
+<title>PingTower</title>
+<style>
+:root { color-scheme:light dark; supported-color-schemes:light dark; }
+@media (prefers-color-scheme:dark) {
+  body,.canvas { background:#151719!important;color:#e6e8e5!important; }
+  .panel { background:#1b1e21!important;color:#e6e8e5!important;border-color:#3d444b!important; }
+  .muted { color:#a6adb3!important; } .rule { border-color:#3d444b!important; }
+  .cta-cell,.cta { background:#e6e8e5!important;color:#151719!important;border-color:#e6e8e5!important; }
+  .text-link { color:#e6e8e5!important; }
+}
+@media (max-width:480px) { .content { padding:28px 24px!important; } h1 { font-size:28px!important; } }
+</style>
 </head>
-<body style="margin:0;padding:0;background:#eef8f4;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:#183126;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#eef8f4;padding:32px 16px;">
-    <tr>
-      <td align="center">
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 22px 60px rgba(24,49,38,0.12);">
-          <tr>
-            <td style="background:linear-gradient(135deg,#0b6e4f 0%,#29b383 100%);padding:40px 40px 56px;color:#ffffff;">
-              <div style="font-size:12px;letter-spacing:0.24em;text-transform:uppercase;opacity:0.82;">PingTower recovery</div>
-              <h1 style="margin:16px 0 0;font-size:34px;line-height:1.15;">{{serverName}} is back online</h1>
-              <p style="margin:16px 0 0;font-size:16px;line-height:1.7;max-width:440px;opacity:0.94;">The monitored target recovered successfully. PingTower observed a healthy UP state.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:40px;">
-              <div style="border:1px solid #cfe9dc;border-radius:20px;padding:24px;background:#f7fdf9;">
-                <div style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#4f7d69;">Host</div>
-                <div style="margin-top:10px;font-size:22px;font-weight:700;color:#0b6e4f;">{{host}}</div>
-                <div style="margin-top:24px;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#4f7d69;">Observed at</div>
-                <div style="margin-top:10px;font-size:16px;color:#35594a;">{{timestampUtc}}</div>
-              </div>
-              <p style="margin:28px 0 0;font-size:15px;line-height:1.8;color:#486456;">Status: <strong>{{status}}</strong>. Monitoring remains active.</p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+<body class="canvas" style="margin:0;padding:0;background:#f4f4f2;color:#0a0a0a;font-family:Arial,Helvetica,sans-serif;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">Your target is responding again: {{serverName}}.</div>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" class="canvas" style="background:#f4f4f2;">
+<tr><td align="center" style="padding:32px 12px;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;">
+<tr><td style="padding:0 12px 24px;font-size:22px;font-weight:600;letter-spacing:-0.7px;">PingTower<span class="muted" style="font-size:12px;font-weight:400;letter-spacing:0;color:#6b6b6b;"> &nbsp; / &nbsp; Monitoring, made clear.</span></td></tr>
+<tr><td class="panel content" style="padding:36px;background:#fff;border:1px solid #d9d9d9;border-radius:10px;">
+<p class="muted" style="margin:0 0 20px;font-size:13px;line-height:1.5;color:#6b6b6b;">Monitor alert / Recovered</p>
+<h1 style="margin:0 0 20px;font-size:34px;line-height:1.15;font-weight:500;letter-spacing:-1px;overflow-wrap:anywhere;">{{serverName}} is back online</h1>
+<p class="muted" style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#6b6b6b;">Your target is responding again. Monitoring continues, so you can get on with your day.</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:24px 0;border-top:1px solid #d9d9d9;border-bottom:1px solid #d9d9d9;" class="rule">
+<tr><td style="padding:18px 0;font-size:13px;line-height:1.8;" class="muted">Host<br>Observed at (UTC)</td><td align="right" style="padding:18px 0;font:13px/1.8 'Courier New',monospace;overflow-wrap:anywhere;">{{host}}<br>{{timestampUtc}}</td></tr>
+</table><p style="margin:0 0 24px;font-size:14px;">Status: <strong>{{status}}</strong></p>
+<table role="presentation" cellspacing="0" cellpadding="0"><tr><td class="cta-cell" style="background:#0a0a0a;border:1px solid #0a0a0a;border-radius:999px;mso-padding-alt:14px 26px;">
+<a class="cta" href="{{serverUrl}}" style="display:inline-block;padding:14px 26px;border-radius:999px;background:#0a0a0a;color:#fff;font-size:14px;font-weight:600;text-decoration:none;">Open monitor &nbsp; &#8599;</a>
+</td></tr></table>
+<p class="muted" style="margin:28px 0 8px;font-size:12px;line-height:1.6;color:#6b6b6b;">Button not working? Open this link:</p>
+<p style="margin:0;font-size:12px;line-height:1.7;word-break:break-all;"><a class="text-link" href="{{serverUrl}}" style="color:#0a0a0a;text-decoration:underline;">{{serverUrl}}</a></p>
+</td></tr>
+<tr><td class="muted" style="padding:24px 12px 0;font-size:12px;line-height:1.7;color:#6b6b6b;">
+<p style="margin:0 0 16px;">You’re receiving this alert because Server recovered notifications are enabled in PingTower.</p>
+<p class="rule" style="margin:0;padding-top:16px;border-top:1px solid #d9d9d9;font:11px/1.6 'Courier New',monospace;">Four protocols. One clear picture.</p>
+</td></tr>
+</table></td></tr></table>
 </body>
 </html>

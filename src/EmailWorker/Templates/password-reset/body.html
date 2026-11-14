@@ -1,38 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reset your PingTower password</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark">
+<title>PingTower</title>
+<style>
+:root { color-scheme:light dark; supported-color-schemes:light dark; }
+@media (prefers-color-scheme:dark) {
+  body,.canvas { background:#151719!important;color:#e6e8e5!important; }
+  .panel { background:#1b1e21!important;color:#e6e8e5!important;border-color:#3d444b!important; }
+  .muted { color:#a6adb3!important; } .rule { border-color:#3d444b!important; }
+  .cta-cell,.cta { background:#e6e8e5!important;color:#151719!important;border-color:#e6e8e5!important; }
+  .text-link { color:#e6e8e5!important; }
+}
+@media (max-width:480px) { .content { padding:28px 24px!important; } h1 { font-size:28px!important; } }
+</style>
 </head>
-<body style="margin:0;padding:0;background:#f2f6fb;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:#14263d;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f2f6fb;padding:32px 16px;">
-    <tr>
-      <td align="center">
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 22px 60px rgba(20,38,61,0.14);">
-          <tr>
-            <td style="background:linear-gradient(135deg,#0b6e4f 0%,#29b383 100%);padding:40px 40px 56px;color:#ffffff;">
-              <div style="font-size:12px;letter-spacing:0.24em;text-transform:uppercase;opacity:0.82;">PingTower security</div>
-              <h1 style="margin:16px 0 0;font-size:34px;line-height:1.15;">Reset your password</h1>
-              <p style="margin:16px 0 0;font-size:16px;line-height:1.7;max-width:440px;opacity:0.94;">We received a request to reset the password for {{recipient}}. Use the secure link below to continue.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:40px;">
-              <table role="presentation" cellspacing="0" cellpadding="0" style="margin:0 auto;">
-                <tr>
-                  <td align="center" style="border-radius:999px;background:#0b6e4f;">
-                    <a href="{{resetUrl}}" style="display:inline-block;padding:16px 30px;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;">Reset password</a>
-                  </td>
-                </tr>
-              </table>
-              <p style="margin:28px 0 0;font-size:14px;line-height:1.8;color:#53667c;">If the button does not work, copy and paste this URL into your browser:</p>
-              <p style="margin:12px 0 0;font-size:14px;line-height:1.8;word-break:break-all;color:#0b6e4f;">{{resetUrl}}</p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+<body class="canvas" style="margin:0;padding:0;background:#f4f4f2;color:#0a0a0a;font-family:Arial,Helvetica,sans-serif;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">Reset your PingTower password securely.</div>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" class="canvas" style="background:#f4f4f2;">
+<tr><td align="center" style="padding:32px 12px;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;">
+<tr><td style="padding:0 12px 24px;font-size:22px;font-weight:600;letter-spacing:-0.7px;">PingTower<span class="muted" style="font-size:12px;font-weight:400;letter-spacing:0;color:#6b6b6b;"> &nbsp; / &nbsp; Monitoring, made clear.</span></td></tr>
+<tr><td class="panel content" style="padding:36px;background:#fff;border:1px solid #d9d9d9;border-radius:10px;">
+<p class="muted" style="margin:0 0 20px;font-size:13px;line-height:1.5;color:#6b6b6b;">Account security</p>
+<h1 style="margin:0 0 20px;font-size:34px;line-height:1.15;font-weight:500;letter-spacing:-1px;overflow-wrap:anywhere;">A fresh start.</h1>
+<p class="muted" style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#6b6b6b;">We received a password reset request for {{recipient}}. Choose a new password using the secure link below.</p>
+
+<table role="presentation" cellspacing="0" cellpadding="0"><tr><td class="cta-cell" style="background:#0a0a0a;border:1px solid #0a0a0a;border-radius:999px;mso-padding-alt:14px 26px;">
+<a class="cta" href="{{resetUrl}}" style="display:inline-block;padding:14px 26px;border-radius:999px;background:#0a0a0a;color:#fff;font-size:14px;font-weight:600;text-decoration:none;">Reset password &nbsp; &#8599;</a>
+</td></tr></table>
+<p class="muted" style="margin:28px 0 8px;font-size:12px;line-height:1.6;color:#6b6b6b;">Button not working? Open this link:</p>
+<p style="margin:0;font-size:12px;line-height:1.7;word-break:break-all;"><a class="text-link" href="{{resetUrl}}" style="color:#0a0a0a;text-decoration:underline;">{{resetUrl}}</a></p>
+</td></tr>
+<tr><td class="muted" style="padding:24px 12px 0;font-size:12px;line-height:1.7;color:#6b6b6b;">
+<p style="margin:0 0 16px;">If you didn’t request a password reset, ignore this email. Your password will stay the same.</p>
+<p class="rule" style="margin:0;padding-top:16px;border-top:1px solid #d9d9d9;font:11px/1.6 'Courier New',monospace;">Four protocols. One clear picture.</p>
+</td></tr>
+</table></td></tr></table>
 </body>
 </html>
