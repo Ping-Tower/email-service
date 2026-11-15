@@ -33,6 +33,20 @@ public class FileSystemEmailTemplateRendererTests
         Assert.Contains("https://example.com?a=1&amp;b=2", htmlBody);
     }
 
+    [Theory]
+    [InlineData("../outside")]
+    [InlineData("..\\outside")]
+    [InlineData("/tmp/template")]
+    [InlineData("folder/template")]
+    [InlineData(".")]
+    [InlineData("")]
+    public async Task RenderAsync_WhenTemplateNameContainsPathSyntax_RejectsIt(string templateId)
+    {
+        var renderer = new FileSystemEmailTemplateRenderer();
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            renderer.RenderAsync(templateId, new Dictionary<string, string?>(), CancellationToken.None));
+    }
+
     [Fact]
     public async Task RenderAsync_WhenTemplateDoesNotExist_ThrowsFileNotFoundException()
     {

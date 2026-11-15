@@ -33,7 +33,11 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
-              drop: [ALL]
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+            runAsNonRoot: true
           env:
             - name: DOTNET_ENVIRONMENT
               value: Production

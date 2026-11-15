@@ -13,12 +13,12 @@ public class FileSystemEmailTemplateRenderer : IEmailTemplateRenderer
         IReadOnlyDictionary<string, string?> data,
         CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(templateId))
-            throw new InvalidOperationException("Email template id is required.");
+        if (string.IsNullOrWhiteSpace(templateId) || !Regex.IsMatch(templateId, @"\A[a-zA-Z0-9][a-zA-Z0-9_-]*\z"))
+            throw new InvalidOperationException("Email template id must be a single alphanumeric name with hyphens or underscores.");
 
-        var templateDirectory = Path.Combine(AppContext.BaseDirectory, "Templates", templateId);
-        var subjectPath = Path.Combine(templateDirectory, "subject.txt");
-        var bodyPath = Path.Combine(templateDirectory, "body.html");
+        var templateDirectory = Path.Join(AppContext.BaseDirectory, "Templates", templateId);
+        var subjectPath = Path.Join(templateDirectory, "subject.txt");
+        var bodyPath = Path.Join(templateDirectory, "body.html");
 
         if (!File.Exists(subjectPath) || !File.Exists(bodyPath))
             throw new FileNotFoundException($"Email template '{templateId}' was not found.");
